@@ -20,21 +20,29 @@ def home(request):
 
 def upload(request):
     if request.method == 'POST':
-        text = request.POST.get('text', '')
-        pdf_file = request.FILES.get('pdf_file', None)
-        text = user.upload_file(pdf_file)
-        article = Article(pdf_file.name,text)
-        num_words = len(text.split())
-        return JsonResponse({'text': text, 'num_words': num_words})
+        try:
+            text = request.POST.get('text', '')
+            pdf_file = request.FILES.get('pdf_file', None)
+            text = user.upload_file(pdf_file)
+            article = Article(pdf_file.name,text)
+            num_words = len(text.split())
+            return JsonResponse({'text': text, 'num_words': num_words})
+        except Exception as e:
+            num_words = 0
+            return JsonResponse({'text': 'File upload failed. Please try again.', 'num_words': num_words})
     
     else:
         return render(request, 'home.html')
 
 # Generate summaries
 def summarize(request):
-    # Get text from POST request
-    text = request.POST.get('text', '')
-    mode = request.POST.get('mode', 'naive_bayes') # Default to naive bayes if mode is not provided
-    summary = user.summarize(text , mode)
-    summary_count = len(summary.split())
-    return JsonResponse({'summary': summary, 'summary_count': summary_count})
+    try:
+        # Get text from POST request
+        text = request.POST.get('text', '')
+        mode = request.POST.get('mode', 'naive_bayes') # Default to naive bayes if mode is not provided
+        summary = user.summarize(text , mode)
+        summary_count = len(summary.split())
+        return JsonResponse({'summary': summary, 'summary_count': summary_count})
+    except Exception as e:
+        summary_count = 0
+        return JsonResponse({'summary': 'Summarization failed. Please try again.', 'summary_count': summary_count})
