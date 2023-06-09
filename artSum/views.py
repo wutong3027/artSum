@@ -40,9 +40,15 @@ def summarize(request):
         # Get text from POST request
         text = request.POST.get('text', '')
         mode = request.POST.get('mode', 'naive_bayes') # Default to naive bayes if mode is not provided
-        summary = user.summarize(text , mode)
-        summary_count = len(summary.split())
-        return JsonResponse({'summary': summary, 'summary_count': summary_count})
+        print("Text:",text)
+        if (text == ''): # If no text is provided, return error message
+            summary = "No pdf/text provided. Please try again."
+            summary_count = 0
+            return JsonResponse({'summary': summary, 'summary_count': summary_count})
+        else:
+            summary = user.summarize(text , mode)
+            summary_count = len(summary.split())
+            return JsonResponse({'summary': summary, 'summary_count': summary_count})
     except Exception as e:
         summary_count = 0
         return JsonResponse({'summary': 'Summarization failed. Please try again.', 'summary_count': summary_count})
