@@ -40,7 +40,6 @@ def summarize(request):
         # Get text from POST request
         text = request.POST.get('text', '')
         mode = request.POST.get('mode', 'naive_bayes') # Default to naive bayes if mode is not provided
-        print("Text:",text)
         if (text == ''): # If no text is provided, return error message
             summary = "No pdf/text provided. Please try again."
             summary_count = 0
